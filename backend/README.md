@@ -1,132 +1,103 @@
-# 🛡️ Auth Backend System
+🚀 Project Backend Overview
+This backend system provides secure user authentication and account management, built using Node.js, Express, and MongoDB. It supports signup, login, email verification, password reset, and session handling using JWT and cookies. 
+🔐 Key Functionalities
+User Signup
+Registers a new user with name, email, username, and password.
 
-A fully functional authentication backend built with **Node.js**, **Express**, and **MongoDB**, supporting:
+Passwords are securely hashed using bcrypt.
 
-- User registration with email verification  
-- Login & Logout  
-- Forgot & Reset password functionality  
-- Welcome emails after verification  
-- JWT token authentication with secure cookies  
+Generates a unique email verification code valid for 24 hours.
 
----
+Sends a verification email via Mailtrap.
 
-## 🧰 Technologies Used
+Automatically logs the user in after signup using a JWT token stored in cookies.
 
-- Node.js  
-- Express.js  
-- MongoDB with Mongoose  
-- JWT for authentication  
-- bcryptjs for password hashing  
-- crypto for token generation  
-- Mailtrap for sending emails  
+Email Verification
+User enters the received verification code.
 
----
+Backend validates the token and marks the user as verified.
 
-## 📁 Project Structure
+Sends a welcome email upon successful verification.
 
---------------------------------------------------------
+Login
+Authenticates user credentials (email & password).
 
-structre 
+Generates a JWT token and stores it in cookies.
 
-📦project-root
- ┣ 📂controllers
- ┃ ┗ 📜auth.controller.js
- ┣ 📂models
- ┃ ┗ 📜user.model.js
- ┣ 📂routes
- ┃ ┗ 📜auth.routes.js
- ┣ 📂mails
- ┃ ┣ 📜emails.js
- ┃ ┣ 📜emailTemplates.js
- ┃ ┗ 📜mailtrap.config.js
- ┣ 📂utils
- ┃ ┣ 📜generateTokenAndSetCookie.js
- ┃ ┗ 📜generateVerificationCode.js
- ┣ 📜.env
- ┣ 📜server.js
- ┗ 📜README.md
+Updates the user’s lastLogin timestamp.
 
-------------------------------------------------------------
----
+Logout
+Clears the JWT token from the cookie to log the user out.
 
-## 🔐 API Endpoints
+Forgot Password
+User requests password reset via email.
 
-| Method | Endpoint                | Description                         | Auth Required |
-|--------|-------------------------|-------------------------------------|---------------|
-| POST   | `/signup`               | Register new user + send code       | ❌            |
-| POST   | `/verify-email`         | Verify email using code             | ❌            |
-| POST   | `/login`                | Login and get token                 | ❌            |
-| POST   | `/logout`               | Logout and clear token              | ❌            |
-| POST   | `/forgot-password`      | Send password reset email           | ❌            |
-| POST   | `/reset-password/:token`| Reset password using token          | ❌            |
-| GET    | `/check-auth`           | Check user session (JWT token)      | ✅            |
+Generates a secure, time-limited token (1 hour).
 
----
------------------------------------------------------------------
+Sends a password reset link with the token to the user's email.
 
-## 📌 Features
+Reset Password
+Accepts a new password via the reset token link.
 
-### ✅ Signup (`/signup`)
-- Requires: `email`, `password`, `username`, `name`
-- Hashes the password
-- Generates a verification code
-- Sends email with verification link (using Mailtrap)
-- Auto logs the user in by sending JWT in cookie
+Verifies the token and updates the user's password after hashing it.
 
-### ✉️ Verify Email (`/verify-email`)
-- Requires: `verificationCode`
-- Validates the code and marks the user as `isVerified`
-- Sends welcome email after success
+Sends a confirmation email upon successful reset.
 
-### 🔐 Login (`/login`)
-- Requires: `email`, `password`
-- Verifies credentials
-- Updates last login
-- Sends JWT token
+Check Authentication
+Verifies the user’s JWT token and returns user info (excluding password).
 
-### 🔓 Logout (`/logout`)
-- Clears the JWT cookie
+Used to confirm if the user is still logged in.
 
-### 🔁 Forgot Password (`/forgot-password`)
-- Sends password reset link with a secure token
-- Token valid for 1 hour
+📧 Email System
+Integrated with Mailtrap for sending transactional emails:
 
-### 🔄 Reset Password (`/reset-password/:token`)
-- Accepts new password and resets after validating token
-- Sends confirmation email on success
+Verification email
 
-### 🔍 Check Auth (`/check-auth`)
-- Protected route to check if user is logged in and token is valid
+Welcome email
 
----
+Password reset request email
 
-## 🔒 Authentication
+Password reset success email
 
-Authentication is done via **JWT Token**, stored securely in **HTTP-only cookies**.  
-Middleware `verifyToken` is used for protected routes.
+Email templates are handled dynamically using variables (e.g., name, reset URL, verification code).
 
----
+🛡️ Security Features
+JWT-based authentication system.
 
-## 💌 Emails
+Cookies used for session persistence (with httpOnly for protection).
 
-Emails are handled using **Mailtrap**, including:
+Tokens have expiration to prevent abuse.
 
-- Verification Email  
-- Welcome Email  
-- Password Reset Email  
-- Password Reset Success Email  
+Passwords are hashed with bcrypt.
 
----
+Reset and verification tokens are time-limited.
 
-## ⚙️ Environment Variables
+User input validation and error handling included.
 
-Create a `.env` file in the root and add the following:
+🧱 Technology Stack
+Node.js & Express.js for backend logic and routing.
 
-```env
-MONGO_URL=your_mongo_connection_string
-PORT=your_port
-JWT_SECRET=your_jwt_secret
-API_URL_MAIL=your_mail_api_url
-TOKEN_MAIL=your_mail_api_token
-CLIENT_URL=http://localhost:5000
-RESET_PASSWORD_URL=reset-password
+MongoDB + Mongoose for database operations.
+
+Mailtrap for sending transactional emails.
+
+JWT for authentication.
+
+bcryptjs for password hashing.
+
+cookie-parser for managing cookies.
+
+dotenv for secure environment variable management.
+
+CORS configured for cross-origin requests with frontend (localhost:5173).
+
+🗂️ Main API Endpoints
+Endpoint	Method	Description
+/api/auth/signup	POST	Register a new user
+/api/auth/login	POST	Login with email & password
+/api/auth/logout	POST	Log out (clear cookie)
+/api/auth/verify-email	POST	Verify user email
+/api/auth/forgot-password	POST	Send password reset email
+/api/auth/reset-password/:token	POST	Reset password with token
+/api/auth/check-auth	GET	Check if user is authenticated
+
