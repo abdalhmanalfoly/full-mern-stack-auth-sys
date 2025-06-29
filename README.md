@@ -48,7 +48,7 @@ React Hot Toast – to show stylish real-time notifications
 
 ✅ Password Strength Indicator – visual feedback for secure password creation
 
-✅ Password Reset Page (coming soon)
+✅ Password Reset Page "on working"
 
 🧑‍💻 Why I Built This
 Authentication is a core feature in nearly every web application. I built this project to master the entire flow — from database schema design, to token handling, to frontend form UX — and make it scalable and developer-friendly.
